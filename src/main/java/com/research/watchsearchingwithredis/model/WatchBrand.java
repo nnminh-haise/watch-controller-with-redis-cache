@@ -3,6 +3,7 @@ package com.research.watchsearchingwithredis.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
         @AttributeOverride(name = "updateAt", column = @Column(name = "update_at")),
         @AttributeOverride(name = "deleteAt", column = @Column(name = "delete_at"))
 })
-public class WatchBrand extends BaseEntity {
+public class WatchBrand extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

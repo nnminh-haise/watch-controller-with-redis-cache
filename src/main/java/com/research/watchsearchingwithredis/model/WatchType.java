@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ import java.util.UUID;
         @AttributeOverride(name = "updateAt", column = @Column(name = "update_at")),
         @AttributeOverride(name = "deleteAt", column = @Column(name = "delete_at"))
 })
-public class WatchType extends BaseEntity {
+public class WatchType extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

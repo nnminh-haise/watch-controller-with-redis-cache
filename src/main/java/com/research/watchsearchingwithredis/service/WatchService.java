@@ -11,6 +11,7 @@ import com.research.watchsearchingwithredis.repository.WatchBrandRepository;
 import com.research.watchsearchingwithredis.repository.WatchRepository;
 import com.research.watchsearchingwithredis.repository.WatchTypeRepository;
 import lombok.NonNull;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,9 @@ public class WatchService {
         this.watchBrandRepository = watchBrandRepository;
     }
 
+    @Cacheable(
+            value = "10minCache",
+            key = "'findAll_' + #size + '_' + #page + '_' + #sortBy + '_' + #typeId + '_' + #brandId")
     public List<Watch> findAll(
             @NonNull Integer size,
             @NonNull Integer page,
@@ -56,6 +60,8 @@ public class WatchService {
 
     public Watch create(@NonNull CreateWatchDto createWatchDto) {
         Optional<WatchType> targetingWatchType = this.watchTypeRepository.findById(createWatchDto.getTypeId());
+        System.out.println(createWatchDto.getTypeId());
+        System.out.println(createWatchDto.getBrandId());
         if (targetingWatchType.isEmpty()) {
             throw new ResourceNotFoundException("Cannot find any watch type with the given type ID!");
         }
@@ -92,10 +98,10 @@ public class WatchService {
         }
 
         Watch updatedWatch = targetingWatch.get();
-        updatedWatch.setName(updatedWatch.getName());
-        updatedWatch.setDescription(updatedWatch.getDescription());
-        updatedWatch.setPrice(updatedWatch.getPrice());
-        updatedWatch.setQuantity(updatedWatch.getQuantity());
+        updatedWatch.setName(updateWatchDto.getName());
+        updatedWatch.setDescription(updateWatchDto.getDescription());
+        updatedWatch.setPrice(updateWatchDto.getPrice());
+        updatedWatch.setQuantity(updateWatchDto.getQuantity());
         updatedWatch.setUpdateAt(LocalDateTime.now());
         Integer updatedRecord = this.watchRepository.updateById(
                 id,
